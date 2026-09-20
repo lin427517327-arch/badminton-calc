@@ -1,132 +1,223 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>羽毛球AA计费器</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-*{box-sizing:border-box;}
-body{
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color:#f5f7fa;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>羽毛球AA计费器</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f4f7fa;
+            padding: 16px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .header-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom:24px;
+            gap:12px;
+        }
+        h1 {
+            font-size:22px;
+            color:#222;
+            flex-shrink:0;
+        }
+        .discount-box{
+            background:#e8f4fc;
+            border:1px solid #90caf9;
+            border-radius:10px;
+            padding:10px 12px;
+            display:flex;
+            align-items:center;
+            gap:6px;
+            flex-shrink:1;
+        }
+        .discount-box input{
+            width:70px;
+        }
+        .section-title{
+            font-size:18px;
+            font-weight:bold;
+            margin:22px 0 14px;
+            color:#333;
+        }
+        .item-row{
+            display:flex;
+            align-items:center;
+            margin-bottom:14px;
+            gap:10px;
+        }
+        .item-row label{
+            width:110px;
+            font-size:16px;
+            color:#333;
+            flex-shrink:0;
+        }
+        .item-row input{
+            flex:1;
+            padding:12px 10px;
+            border:1px solid #ccc;
+            border-radius:8px;
+            font-size:16px;
+        }
+        .unit-text{
+            flex-shrink:0;
+            font-size:16px;
+        }
+        .divider{
+            height:1px;
+            background:#dddddd;
+            margin:18px 0;
+        }
+        .result-block{
+            margin-top:24px;
+            background:#e8f9ee;
+            border-radius:12px;
+            padding:18px;
+        }
+        .result-block h3{
+            font-size:18px;
+            margin-bottom:14px;
+        }
+        .result-item{
+            font-size:17px;
+            margin-bottom:10px;
+        }
+        .money-num{
+            font-size:20px;
+            font-weight:bold;
+            color:#008833;
+        }
+        .total-check-row{
+            margin-top:12px;
+            font-size:15px;
+            color:#444;
+        }
+    </style>
 </head>
-<body class="p-4 max-w-md mx-auto">
-<div class="bg-white rounded-xl shadow-md p-5 relative">
-    <!-- 右上角：女生减免金额 -->
-    <div class="absolute top-4 right-4 bg-sky-50 p-2 rounded-lg border border-sky-200">
-        <label class="text-sm text-sky-700">女生减免：</label>
-        <input type="number" id="discount" value="5" min="0" step="0.1" class="w-16 border rounded px-1 py-1 text-right">
-        <span class="text-sm text-sky-700">元</span>
-    </div>
-    <h2 class="text-xl font-bold text-gray-800 mb-6">🏸 羽毛球AA计费</h2>
-
-    <!-- 费用拆分区域 -->
-    <div class="space-y-3 mb-6 pt-2">
-        <h3 class="font-semibold text-gray-700">费用明细</h3>
-        <div class="flex items-center justify-between">
-            <label class="text-gray-600">场地费：</label>
-            <input type="number" id="courtFee" value="0" min="0" step="0.01" class="w-32 border rounded px-2 py-2 text-right">
-            <span class="ml-2">元</span>
-        </div>
-        <div class="flex items-center justify-between">
-            <label class="text-gray-600">羽毛球个数：</label>
-            <input type="number" id="ballCount" value="0" min="0" step="1" class="w-32 border rounded px-2 py-2 text-right">
-            <span class="ml-2">个</span>
-        </div>
-        <div class="flex items-center justify-between">
-            <label class="text-gray-600">羽毛球单价：</label>
-            <input type="number" id="ballPrice" value="0" min="0" step="0.01" class="w-32 border rounded px-2 py-2 text-right">
-            <span class="ml-2">元/个</span>
-        </div>
-        <div class="flex items-center justify-between border-t pt-3 mt-2">
-            <label class="font-semibold text-gray-700">✅ 总费用（可手动修改）：</label>
-            <input type="number" id="totalFee" value="0" min="0" step="0.01" class="w-32 border rounded px-2 py-2 text-right font-bold text-orange-600">
-            <span class="ml-2">元</span>
+<body>
+<div class="container">
+    <div class="header-wrap">
+        <h1>🏸羽毛球AA计费</h1>
+        <div class="discount-box">
+            <span>女生减免：</span>
+            <input id="girlDiscount" type="number" placeholder="" value="5">
+            <span>元</span>
         </div>
     </div>
 
-    <!-- 人数区域 -->
-    <div class="space-y-3 mb-6">
-        <h3 class="font-semibold text-gray-700">参与人数</h3>
-        <div class="flex items-center justify-between">
-            <label class="text-gray-600">男生人数：</label>
-            <input type="number" id="maleNum" value="0" min="0" step="1" class="w-32 border rounded px-2 py-2 text-right">
-            <span class="ml-2">人</span>
-        </div>
-        <div class="flex items-center justify-between">
-            <label class="text-gray-600">女生人数：</label>
-            <input type="number" id="femaleNum" value="0" min="0" step="1" class="w-32 border rounded px-2 py-2 text-right">
-            <span class="ml-2">人</span>
-        </div>
+    <div class="section-title">费用明细</div>
+
+    <div class="item-row">
+        <label>场地费：</label>
+        <input id="placeFee" type="number" placeholder="">
+        <span class="unit-text">元</span>
     </div>
 
-    <!-- 计算结果区域 -->
-    <div class="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
-        <h3 class="font-bold text-emerald-800 mb-3">📊 分摊结果</h3>
-        <div class="space-y-2 text-gray-800">
-            <p>男生每人应付：<span id="malePay" class="font-bold text-lg text-emerald-700">0.00</span> 元</p>
-            <p>女生每人应付：<span id="femalePay" class="font-bold text-lg text-emerald-700">0.00</span> 元</p>
-            <p>所有人合计：<span id="sumCheck" class="font-bold text-orange-600">0.00</span> 元</p>
-            <p class="text-sm text-gray-500 mt-2">
-计算公式：<br>
-男生单价 = (总费用 + 女生人数×减免) ÷总人数<br>
-女生单价 = 男生单价 − 减免<br>
-合计校验：男生总出+女生总出 = 总费用
-            </p>
-        </div>
+    <div class="item-row">
+        <label>羽毛球个数：</label>
+        <input id="ballCount" type="number" placeholder="">
+        <span class="unit-text">个</span>
     </div>
+
+    <div class="item-row">
+        <label>羽毛球单价：</label>
+        <input id="ballPrice" type="number" placeholder="">
+        <span class="unit-text">元/个</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="item-row">
+        <label>✅总费用(手动改)：</label>
+        <input id="totalFee" type="number" placeholder="">
+        <span class="unit-text">元</span>
+    </div>
+
+    <div class="section-title">参与人数</div>
+
+    <div class="item-row">
+        <label>男生人数：</label>
+        <input id="manCount" type="number" placeholder="">
+        <span class="unit-text">人</span>
+    </div>
+    <div class="item-row">
+        <label>女生人数：</label>
+        <input id="womanCount" type="number" placeholder="">
+        <span class="unit-text">人</span>
+    </div>
+
+    <div class="result-block">
+        <h3>📊分摊结果</h3>
+        <div class="result-item">男生每人应付：<span class="money-num" id="manPay">0.00</span> 元</div>
+        <div class="result-item">女生每人应付：<span class="money-num" id="womanPay">0.00</span> 元</div>
+        <div class="total-check-row">所有人合计：<span id="sumCheck">0.00</span> 元</div>
+    </div>
+
 </div>
 
 <script>
-const $ = s => document.querySelector(s);
+    const $ = id=>document.getElementById(id);
+    const inputs = [
+        $("placeFee"),$("ballCount"),$("ballPrice"),
+        $("totalFee"),$("manCount"),$("womanCount"),$("girlDiscount")
+    ];
 
-// 自动计算总费用：场地费 + 球数量*球单价
-function calcTotalFee(){
-    const court = Number($("#courtFee").value) || 0;
-    const bCount = Number($("#ballCount").value) || 0;
-    const bPrice = Number($("#ballPrice").value) || 0;
-    const autoTotal = court + bCount * bPrice;
-    $("#totalFee").value = autoTotal.toFixed(2);
-    calcResult();
-}
-
-// 【修正后核心分摊计算】
-function calcResult(){
-    const total = Number($("#totalFee").value) || 0;
-    const male = Number($("#maleNum").value) || 0;
-    const female = Number($("#femaleNum").value) || 0;
-    const discount = Number($("#discount").value) || 0;
-    const totalPeople = male + female;
-
-    if(totalPeople <=0){
-        $("#malePay").innerText = "0.00";
-        $("#femalePay").innerText = "0.00";
-        $("#sumCheck").innerText = "0.00";
-        return;
+    function getNum(input){
+        let v = parseFloat(input.value);
+        return isNaN(v)||v<0 ? 0 : v;
     }
 
-    // 正确公式
-    const malePer = (total + female * discount) / totalPeople;
-    const femalePer = malePer - discount;
+    function calc(){
+        const place = getNum($("placeFee"));
+        const bCount = getNum($("ballCount"));
+        const bPrice = getNum($("ballPrice"));
+        const manualTotal = getNum($("totalFee"));
+        const man = getNum($("manCount"));
+        const woman = getNum($("womanCount"));
+        const discount = getNum($("girlDiscount"));
 
-    const sumAll = male * malePer + female * femalePer;
+        //计算自动总费用
+        const autoTotal = place + bCount * bPrice;
+        //如果手动总费用大于0，优先使用手动输入
+        const totalCost = manualTotal>0 ? manualTotal : autoTotal;
 
-    $("#malePay").innerText = malePer.toFixed(2);
-    $("#femalePay").innerText = femalePer.toFixed(2);
-    $("#sumCheck").innerText = sumAll.toFixed(2);
-}
+        const totalPeople = man + woman;
+        let manPay = 0, womanPay =0;
+        let sumCheck =0;
 
-// 绑定全部输入事件
-$("#courtFee").addEventListener('input',calcTotalFee);
-$("#ballCount").addEventListener('input',calcTotalFee);
-$("#ballPrice").addEventListener('input',calcTotalFee);
-$("#totalFee").addEventListener('input',calcResult);
-$("#maleNum").addEventListener('input',calcResult);
-$("#femaleNum").addEventListener('input',calcResult);
-$("#discount").addEventListener('input',calcResult);
+        if(totalPeople >0){
+            //正确分摊公式：总费用 = man*M + woman*(M‑d)
+            // M = (totalCost + woman * discount) / (man+woman)
+            const M = (totalCost + woman * discount) / totalPeople;
+            manPay = M;
+            womanPay = M - discount;
+        }
+        sumCheck = manPay * man + womanPay * woman;
+
+        $("manPay").innerText = manPay.toFixed(2);
+        $("womanPay").innerText = womanPay.toFixed(2);
+        $("sumCheck").innerText = sumCheck.toFixed(2);
+    }
+
+    inputs.forEach(inp=>{
+        inp.addEventListener('input',calc);
+    })
+    calc();
 </script>
+
 </body>
 </html>
