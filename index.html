@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>羽毛球AA计费器</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+*{box-sizing:border-box;}
+body{
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color:#f5f7fa;
+}
+</style>
+</head>
+<body class="p-4 max-w-md mx-auto">
+<div class="bg-white rounded-xl shadow-md p-5 relative">
+    <!-- 右上角：女生减免金额 -->
+    <div class="absolute top-4 right-4 bg-sky-50 p-2 rounded-lg border border-sky-200">
+        <label class="text-sm text-sky-700">女生减免：</label>
+        <input type="number" id="discount" value="5" min="0" step="0.1" class="w-16 border rounded px-1 py-1 text-right">
+        <span class="text-sm text-sky-700">元</span>
+    </div>
+    <h2 class="text-xl font-bold text-gray-800 mb-6">🏸 羽毛球AA计费</h2>
+
+    <!-- 费用拆分区域 -->
+    <div class="space-y-3 mb-6 pt-2">
+        <h3 class="font-semibold text-gray-700">费用明细</h3>
+        <div class="flex items-center justify-between">
+            <label class="text-gray-600">场地费：</label>
+            <input type="number" id="courtFee" value="0" min="0" step="0.01" class="w-32 border rounded px-2 py-2 text-right">
+            <span class="ml-2">元</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-gray-600">羽毛球个数：</label>
+            <input type="number" id="ballCount" value="0" min="0" step="1" class="w-32 border rounded px-2 py-2 text-right">
+            <span class="ml-2">个</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-gray-600">羽毛球单价：</label>
+            <input type="number" id="ballPrice" value="0" min="0" step="0.01" class="w-32 border rounded px-2 py-2 text-right">
+            <span class="ml-2">元/个</span>
+        </div>
+        <div class="flex items-center justify-between border-t pt-3 mt-2">
+            <label class="font-semibold text-gray-700">✅ 总费用（可手动修改）：</label>
+            <input type="number" id="totalFee" value="0" min="0" step="0.01" class="w-32 border rounded px-2 py-2 text-right font-bold text-orange-600">
+            <span class="ml-2">元</span>
+        </div>
+    </div>
+
+    <!-- 人数区域 -->
+    <div class="space-y-3 mb-6">
+        <h3 class="font-semibold text-gray-700">参与人数</h3>
+        <div class="flex items-center justify-between">
+            <label class="text-gray-600">男生人数：</label>
+            <input type="number" id="maleNum" value="0" min="0" step="1" class="w-32 border rounded px-2 py-2 text-right">
+            <span class="ml-2">人</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-gray-600">女生人数：</label>
+            <input type="number" id="femaleNum" value="0" min="0" step="1" class="w-32 border rounded px-2 py-2 text-right">
+            <span class="ml-2">人</span>
+        </div>
+    </div>
+
+    <!-- 计算结果区域 -->
+    <div class="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
+        <h3 class="font-bold text-emerald-800 mb-3">📊 分摊结果</h3>
+        <div class="space-y-2 text-gray-800">
+            <p>男生每人应付：<span id="malePay" class="font-bold text-lg text-emerald-700">0.00</span> 元</p>
+            <p>女生每人应付：<span id="femalePay" class="font-bold text-lg text-emerald-700">0.00</span> 元</p>
+            <p>所有人合计：<span id="sumCheck" class="font-bold text-orange-600">0.00</span> 元</p>
+            <p class="text-sm text-gray-500 mt-2">
+计算公式：<br>
+男生单价 = (总费用 + 女生人数×减免) ÷总人数<br>
+女生单价 = 男生单价 − 减免<br>
+合计校验：男生总出+女生总出 = 总费用
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+
+// 自动计算总费用：场地费 + 球数量*球单价
+function calcTotalFee(){
+    const court = Number($("#courtFee").value) || 0;
+    const bCount = Number($("#ballCount").value) || 0;
+    const bPrice = Number($("#ballPrice").value) || 0;
+    const autoTotal = court + bCount * bPrice;
+    $("#totalFee").value = autoTotal.toFixed(2);
+    calcResult();
+}
+
+// 【修正后核心分摊计算】
+function calcResult(){
+    const total = Number($("#totalFee").value) || 0;
+    const male = Number($("#maleNum").value) || 0;
+    const female = Number($("#femaleNum").value) || 0;
+    const discount = Number($("#discount").value) || 0;
+    const totalPeople = male + female;
+
+    if(totalPeople <=0){
+        $("#malePay").innerText = "0.00";
+        $("#femalePay").innerText = "0.00";
+        $("#sumCheck").innerText = "0.00";
+        return;
+    }
+
+    // 正确公式
+    const malePer = (total + female * discount) / totalPeople;
+    const femalePer = malePer - discount;
+
+    const sumAll = male * malePer + female * femalePer;
+
+    $("#malePay").innerText = malePer.toFixed(2);
+    $("#femalePay").innerText = femalePer.toFixed(2);
+    $("#sumCheck").innerText = sumAll.toFixed(2);
+}
+
+// 绑定全部输入事件
+$("#courtFee").addEventListener('input',calcTotalFee);
+$("#ballCount").addEventListener('input',calcTotalFee);
+$("#ballPrice").addEventListener('input',calcTotalFee);
+$("#totalFee").addEventListener('input',calcResult);
+$("#maleNum").addEventListener('input',calcResult);
+$("#femaleNum").addEventListener('input',calcResult);
+$("#discount").addEventListener('input',calcResult);
+</script>
+</body>
+</html>
