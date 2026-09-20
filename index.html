@@ -85,9 +85,9 @@ const $ = s => document.querySelector(s);
 
 // 自动计算总费用：场地费 + 球数量*球单价
 function calcTotalFee(){
-    const court = Number($("#courtFee").value) || 0;
-    const bCount = Number($("#ballCount").value) || 0;
-    const bPrice = Number($("#ballPrice").value) || 0;
+    const court = Number($("#courtFee").value) || ;
+    const bCount = Number($("#ballCount").value) || ;
+    const bPrice = Number($("#ballPrice").value) || ;
     const autoTotal = court + bCount * bPrice;
     $("#totalFee").value = autoTotal.toFixed(2);
     calcResult();
@@ -96,9 +96,9 @@ function calcTotalFee(){
 // 【修正后核心分摊计算】
 function calcResult(){
     const total = Number($("#totalFee").value) || 0;
-    const male = Number($("#maleNum").value) || 0;
-    const female = Number($("#femaleNum").value) || 0;
-    const discount = Number($("#discount").value) || 0;
+    const male = Number($("#maleNum").value) || ;
+    const female = Number($("#femaleNum").value) || ;
+    const discount = Number($("#discount").value) || ;
     const totalPeople = male + female;
 
     if(totalPeople <=0){
