@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>羽毛球AA计费器</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-*{box-sizing:border-box;}
-body{
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color:#f5f7fa;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>羽毛球AA计费器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        *{box-sizing:border-box;}
+        body{
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color:#f5f7fa;
+        }
+    </style>
 </head>
 <body class="p-4 max-w-md mx-auto">
 <div class="bg-white rounded-xl shadow-md p-5 relative">
@@ -28,17 +28,17 @@ body{
         <h3 class="font-semibold text-gray-700">费用明细</h3>
         <div class="flex items-center justify-between">
             <label class="text-gray-600">场地费：</label>
-            <input type="number" id="courtFee" value="0" min="0" step="0.01" class="w-32 border rounded px-2 py-2 text-right">
+            <input type="number" id="courtFee" value="" min="0" step="0.01" class="w-32 border rounded px-2 py-2 text-right">
             <span class="ml-2">元</span>
         </div>
         <div class="flex items-center justify-between">
             <label class="text-gray-600">羽毛球个数：</label>
-            <input type="number" id="ballCount" value="0" min="0" step="1" class="w-32 border rounded px-2 py-2 text-right">
+            <input type="number" id="ballCount" value="" min="0" step="1" class="w-32 border rounded px-2 py-2 text-right">
             <span class="ml-2">个</span>
         </div>
         <div class="flex items-center justify-between">
             <label class="text-gray-600">羽毛球单价：</label>
-            <input type="number" id="ballPrice" value="0" min="0" step="0.01" class="w-32 border rounded px-2 py-2 text-right">
+            <input type="number" id="ballPrice" value="" min="0" step="0.01" class="w-32 border rounded px-2 py-2 text-right">
             <span class="ml-2">元/个</span>
         </div>
         <div class="flex items-center justify-between border-t pt-3 mt-2">
@@ -53,12 +53,12 @@ body{
         <h3 class="font-semibold text-gray-700">参与人数</h3>
         <div class="flex items-center justify-between">
             <label class="text-gray-600">男生人数：</label>
-            <input type="number" id="maleNum" value="0" min="0" step="1" class="w-32 border rounded px-2 py-2 text-right">
+            <input type="number" id="maleNum" value="" min="0" step="1" class="w-32 border rounded px-2 py-2 text-right">
             <span class="ml-2">人</span>
         </div>
         <div class="flex items-center justify-between">
             <label class="text-gray-600">女生人数：</label>
-            <input type="number" id="femaleNum" value="0" min="0" step="1" class="w-32 border rounded px-2 py-2 text-right">
+            <input type="number" id="femaleNum" value="" min="0" step="1" class="w-32 border rounded px-2 py-2 text-right">
             <span class="ml-2">人</span>
         </div>
     </div>
@@ -70,11 +70,7 @@ body{
             <p>男生每人应付：<span id="malePay" class="font-bold text-lg text-emerald-700">0.00</span> 元</p>
             <p>女生每人应付：<span id="femalePay" class="font-bold text-lg text-emerald-700">0.00</span> 元</p>
             <p>所有人合计：<span id="sumCheck" class="font-bold text-orange-600">0.00</span> 元</p>
-            <p class="text-sm text-gray-500 mt-2">
-计算公式：<br>
-男生单价 = (总费用 + 女生人数×减免) ÷总人数<br>
-女生单价 = 男生单价 − 减免<br>
-合计校验：男生总出+女生总出 = 总费用
+            <p class="text-sm text-gray-500 mt-2"> 计算公式：<br> 男生单价 = (总费用 + 女生人数×减免) ÷总人数<br> 女生单价 = 男生单价 − 减免<br> 合计校验：男生总出+女生总出 = 总费用
             </p>
         </div>
     </div>
@@ -85,20 +81,20 @@ const $ = s => document.querySelector(s);
 
 // 自动计算总费用：场地费 + 球数量*球单价
 function calcTotalFee(){
-    const court = Number($("#courtFee").value) || ;
-    const bCount = Number($("#ballCount").value) || ;
-    const bPrice = Number($("#ballPrice").value) || ;
+    const court = Number($("#courtFee").value) || 0;
+    const bCount = Number($("#ballCount").value) || 0;
+    const bPrice = Number($("#ballPrice").value) || 0;
     const autoTotal = court + bCount * bPrice;
     $("#totalFee").value = autoTotal.toFixed(2);
-    calcResult();
+    calcResult(); // 修改总费用后强制刷新分摊结果
 }
 
 // 【修正后核心分摊计算】
 function calcResult(){
     const total = Number($("#totalFee").value) || 0;
-    const male = Number($("#maleNum").value) || ;
-    const female = Number($("#femaleNum").value) || ;
-    const discount = Number($("#discount").value) || ;
+    const male = Number($("#maleNum").value) || 0;
+    const female = Number($("#femaleNum").value) || 0;
+    const discount = Number($("#discount").value) || 0;
     const totalPeople = male + female;
 
     if(totalPeople <=0){
@@ -108,7 +104,6 @@ function calcResult(){
         return;
     }
 
-    // 正确公式
     const malePer = (total + female * discount) / totalPeople;
     const femalePer = malePer - discount;
 
@@ -119,14 +114,19 @@ function calcResult(){
     $("#sumCheck").innerText = sumAll.toFixed(2);
 }
 
-// 绑定全部输入事件
-$("#courtFee").addEventListener('input',calcTotalFee);
-$("#ballCount").addEventListener('input',calcTotalFee);
-$("#ballPrice").addEventListener('input',calcTotalFee);
-$("#totalFee").addEventListener('input',calcResult);
-$("#maleNum").addEventListener('input',calcResult);
-$("#femaleNum").addEventListener('input',calcResult);
-$("#discount").addEventListener('input',calcResult);
+// 封装绑定事件函数：同时监听 input + blur，修复空number输入框事件丢失bug
+function bindEvt(el, fn){
+    el.addEventListener('input', fn);
+    el.addEventListener('blur', fn);
+}
+
+bindEvt($("#courtFee"),calcTotalFee);
+bindEvt($("#ballCount"),calcTotalFee);
+bindEvt($("#ballPrice"),calcTotalFee);
+bindEvt($("#totalFee"),calcResult);
+bindEvt($("#maleNum"),calcResult);
+bindEvt($("#femaleNum"),calcResult);
+bindEvt($("#discount"),calcResult);
 </script>
 </body>
 </html>
